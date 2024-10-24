@@ -5,7 +5,9 @@
  * @format
  */
 
-import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import React, { useEffect, useState } from 'react';
 import type {PropsWithChildren} from 'react';
 import {
   SafeAreaView,
@@ -24,75 +26,73 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
+import HomeScreen from './screens/HomeScreen';
+import AddItem from './screens/AddItem';
+import { Provider } from 'react-redux';
+import { persistReducer } from 'redux-persist';
+import { PersistGate } from 'redux-persist/integration/react';
+import { persistor, store } from './Redux/store';
+import ModifyItem from './screens/ModifyItem';
+import SearchScreen from './Archive/SearchScreen';
+import * as Keychain from 'react-native-keychain';
+import UUID from 'react-native-uuid'
+
 
 type SectionProps = PropsWithChildren<{
   title: string;
 }>;
-
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
+const Stack = createNativeStackNavigator();
+const UUID_KEY = 'user_uuid';
 
 function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+  const[uuid, setUuid] = useState<string | null>(null);
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
+  useEffect(() => {
+    const initializeUuid = async () => {
+      try {
+        const credentials = await Keychain.getGenericPassword({
+          service: UUID_KEY,
+        })
+
+        let storedUuid;
+
+        if (credentials) {
+          storedUuid = credentials.password;
+        } else {
+          storedUuid = UUID.v4() as string;
+
+          await Keychain.setGenericPassword(UUID_KEY, storedUuid, {
+            service: UUID_KEY,
+          });
+        }
+
+        setUuid(storedUuid)
+      } catch(error){
+        console.error('Error initializing UUid', error)
+      }
+    }
+
+    initializeUuid();
+  }, [])
+  console.log(uuid)
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+      <NavigationContainer>
+        <Stack.Navigator
+          screenOptions={{
+            headerShown: false
+          }}
+        >
+          <Stack.Screen name="Home" component={HomeScreen}/>
+          <Stack.Screen name="AddItem" component={AddItem}/>
+          <Stack.Screen name="Modify" component={ModifyItem}/>
+          <Stack.Screen name="Search" component={SearchScreen}/>
+        </Stack.Navigator>
+      </NavigationContainer>
+      </PersistGate>
+    </Provider>
   );
 }
 
