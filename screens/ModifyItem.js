@@ -12,6 +12,7 @@ const ModifyItem = ({route}) => {
     const [customChange, setCustomChange] = useState(0);
     const [container, setContainer] = useState(item.container);
     const [style, setStyle] = useState(item.style);
+    const [notes, setNotes] = useState(item.notes);
     const [modalVisible, setModalVisible] = useState(false);
 
     const data = useSelector(selectItems)
@@ -40,7 +41,8 @@ const ModifyItem = ({route}) => {
             ...item,
             expirationDate: addDays(item.expirationDate, days),
             container: container,
-            style: style
+            style: style,
+            notes: notes
         }
         dispatch(updateItem(updatedItem))
         navigation.goBack()
@@ -148,27 +150,39 @@ const ModifyItem = ({route}) => {
         <View style={styles.edit}>
             <View style={styles.sectionView}>
                 <Text>Edit Expiration</Text>
-                <View style={styles.addRemove}>
-                    <TouchableOpacity style={styles.subtractButton} onPress={() => handleUpdate(item, -7)}><Text>-7</Text></TouchableOpacity>
-                    <TouchableOpacity style={styles.addButton} onPress={() => handleUpdate(item, 7)}><Text>+7</Text></TouchableOpacity>
-                </View>
-                <View style={styles.addRemove}>
-                    <TouchableOpacity style={styles.subtractButton} onPress={() => handleUpdate(item, -1)}><Text>-1</Text></TouchableOpacity>
-                    <TouchableOpacity style={styles.addButton} onPress={() => handleUpdate(item, 1)}><Text>+1</Text></TouchableOpacity>
+                <View style={styles.editOptions}>
+                  <View>
+                    <View style={styles.addRemove}>
+                        <TouchableOpacity style={styles.subtractButton} onPress={() => handleUpdate(item, -7)}><Text>-7</Text></TouchableOpacity>
+                        <TouchableOpacity style={styles.addButton} onPress={() => handleUpdate(item, 7)}><Text>+7</Text></TouchableOpacity>
+                    </View>
+                    <View style={styles.addRemove}>
+                        <TouchableOpacity style={styles.subtractButton} onPress={() => handleUpdate(item, -1)}><Text>-1</Text></TouchableOpacity>
+                        <TouchableOpacity style={styles.addButton} onPress={() => handleUpdate(item, 1)}><Text>+1</Text></TouchableOpacity>
+                    </View>
+                  </View>
+                  <View>
+                    <TextInput
+                        style={styles.inputCustom}
+                        placeholder="add(+), subtract(-)"
+                        placeholderTextColor="darkgrey"
+                        value={customChange}
+                        onChangeText={setCustomChange}
+                    />
+                    <TouchableOpacity style={[styles.button, {backgroundColor: 'black'}]} onPress={() => handleUpdate(item, customChange)}>
+                        <Text style={styles.buttonText}>Save Custom</Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
             </View>
-            <View style={styles.sectionView}>
-                <TextInput
-                    style={styles.input}
-                    placeholder="add(+), subtract(-)"
-                    placeholderTextColor="darkgrey"
-                    value={customChange}
-                    onChangeText={setCustomChange}
+
+            <TextInput
+                  style={styles.input}
+                  placeholder={item.notes}
+                  placeholderTextColor="darkgrey"
+                  value={notes}
+                  onChangeText={setNotes}
                 />
-                <TouchableOpacity style={[styles.button, {backgroundColor: 'black'}]} onPress={() => handleUpdate(item, customChange)}>
-                    <Text style={styles.buttonText}>Custom Change</Text>
-                </TouchableOpacity>
-            </View>
             <View style={styles.addRemove}>
                 <TouchableOpacity style={styles.editButton} onPress={readNdef}>
                     <Text style={styles.buttonText}> Edit Container</Text>
@@ -180,20 +194,20 @@ const ModifyItem = ({route}) => {
 
         </View>
         <Modal
-                animationType='fade'
-                transparent={true}
-                visible={modalVisible}
-                onRequestClose={toggleModal}
-            >
-                <View style={styles.modalOverlay}>
-                    <View style={styles.modalContent}>
-                        <Text style={styles.modalText}>This container is already in use. Please use a different container.</Text>
-                        <TouchableOpacity onPress={() => toggleModal()} style={styles.closeButton}>
-                            <Text style={styles.buttonText}>Close</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-            </Modal>
+          animationType='fade'
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={toggleModal}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalText}>This container is already in use. Please use a different container.</Text>
+                <TouchableOpacity onPress={() => toggleModal()} style={styles.closeButton}>
+                  <Text style={styles.buttonText}>Close</Text>
+                </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
     </SafeAreaView>
     <TouchableOpacity style={styles.removeButton} onPress={() => handleDelete(item)}><Text>Remove Item</Text></TouchableOpacity>
     </View>
@@ -213,72 +227,86 @@ const styles = StyleSheet.create({
     button:{
         borderRadius: 5,
         alignItems: 'center',
-        padding: 10,
+        padding: 5,
     },
     input: {
         borderRadius: 10,
-        fontSize: 20,
+        fontSize: 15,
         padding: 10,
         backgroundColor: '#e2e2e2',
         marginBottom: 10,
         width: 200,
       },
-      buttonText: {
+    buttonText: {
         color: '#fff',
-        fontSize: 18,
-      },
-      modalOverlay: {
+        fontSize: 15,
+    },
+    modalOverlay: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
-      },
-      modalContent: {
+    },
+    modalContent: {
         width: 300,
         padding: 20,
         backgroundColor: 'white',
         borderRadius: 10,
         alignItems: 'center',
-      },
-      modalText: {
+    },
+    modalText: {
         fontSize: 18,
         marginBottom: 20,
-      },
-      closeButton: {
+    },
+    closeButton: {
         backgroundColor: '#FF6347',
         padding: 10,
         borderRadius: 5,
-      },
-      container: {
+    },
+    container: {
         flex: 1,
-      },
-      contentContainer: {
+    },
+    contentContainer: {
         margin: 5
-      },
-      itemContainer: {
+    },
+    itemContainer: {
         alignItems: 'center',
         paddingTop: 20
-      },
-      backButton: {
+    },
+    backButton: {
         backgroundColor: 'black',
         borderRadius: 5,
         width: 60,
         alignItems: 'center',
         padding: 10,
-      },
+    },
       backButtonText: {
         alignItems: 'center',
         color: 'white',
-
-      },
-      largeText: {
+    },
+    largeText: {
         fontSize: 30,
-        padding: 10
-      },
-      addRemove: {
+        paddingBottom: 5
+    },
+    editOptions: {
+      flexDirection: 'row',
+      verticalAlign: 'middle'
+    },
+    inputCustom: {
+      borderRadius: 5,
+      fontSize: 15,
+      padding: 10,
+      backgroundColor: '#e2e2e2',
+      marginBottom: 10,
+      marginTop: 10,
+      width: 140,
+      height: 35,
+      verticalAlign: 'middle'
+    },
+    addRemove: {
         flexDirection: 'row',
         alignItems: 'center'
-      },
+    },
       addButton: {
         backgroundColor: 'green',
         borderRadius: 5,
@@ -296,12 +324,10 @@ const styles = StyleSheet.create({
         margin: 10
       },
       edit: {
-        padding: 20,
+        padding: 10,
         margin: 15,
         alignItems: 'center',
-        backgroundColor: '#e2e2e2',
         borderRadius: 25
-
       },
       colorShow: {
         width: 50,
@@ -314,7 +340,7 @@ const styles = StyleSheet.create({
       editButton: {
         backgroundColor: 'black',
         borderRadius: 5,
-        width: 140,
+        width: 120,
         alignItems: 'center',
         padding: 5,
         margin: 10

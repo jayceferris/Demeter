@@ -27,7 +27,7 @@ const Form = () => {
     const [container, setContainer] = useState('00000000')
     const [style, setStyle] = useState({})
     const [textStyle, setTextStyle] = useState({})
-    const [uniqueContainer, setUniqueContainer] = useState(true)
+    const [notes, setNotes] = useState('');
     
     const [modalVisible, setModalVisible] = useState(false);
     const toggleModal = () => {
@@ -92,17 +92,6 @@ const Form = () => {
         return
       }
 
-      const checkUniqueContainer = (numberToCheck) => {
-        console.log(numberToCheck)
-          if(numberToCheck === '00000000'){
-            return
-          }
-          else{
-            const unique = !data.some(item => item.container === numberToCheck); 
-            setUniqueContainer(unique)
-            return
-          }
-        }
       
       const handlePremium = () => {
         if(premium){
@@ -169,6 +158,7 @@ const Form = () => {
             dateAdded: currDate, 
             expirationDate: expirationDate,
             container: container,
+            notes: notes,
             style: style,
             textStyle: textStyle
           };
@@ -206,6 +196,13 @@ const Form = () => {
             keyboardType="numeric"
             value={time}
             onChangeText={setTime}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Notes"
+            placeholderTextColor="darkgrey"
+            value={notes}
+            onChangeText={setNotes}
           />
           <TouchableOpacity style={styles.button} onPress={readNdef}><Text style={styles.buttonText}>Add Container</Text></TouchableOpacity>
           <View style={[styles.colorShow, style]}/>
