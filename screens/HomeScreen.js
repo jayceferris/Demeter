@@ -115,12 +115,14 @@ const HomeScreen = () => {
     <View style={[styles.container]}>
     <SafeAreaView style={styles.safeContainer}>
       <View style={styles.titleContainer}>
-        <Text style={styles.title}>Title Here</Text>
+        <Text style={styles.title}>Demeater</Text>
         <TouchableOpacity onPress={navigateAddTask} style={styles.button}>
           <Text style={styles.buttonText}>+</Text>
         </TouchableOpacity>
       </View>
+      <View style={styles.itemListView}>
         <ItemList/>
+      </View>
     </SafeAreaView>
     <TouchableOpacity style={styles.containerButton} onPress={readNdef}><Text>Container</Text></TouchableOpacity>
     <Modal
@@ -234,6 +236,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 10,
     borderWidth: 2
+  },
+  itemListView: {
+    height: '52%'
   }
   
 

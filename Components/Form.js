@@ -92,19 +92,13 @@ const Form = () => {
         return
       }
 
+      const handlePremiumUpdate = () => {
+        dispatch(togglePremium());
+      }
+
       
       const handlePremium = () => {
-        if(premium){
-          handleAddTask();
-        }
-        else{
-          if(data.length > 3){
-            togglePremiumModal();
-          }
-          else {
-            handleAddTask();
-          }
-        }
+        handleAddTask();
       }
       
       const handleContainer = () => {
@@ -232,7 +226,7 @@ const Form = () => {
                 <View style={styles.modalOverlay}>
                     <View style={styles.modalContent}>
                         <Text style={styles.modalText}>You have reached the max items you can add</Text>
-                        <TouchableOpacity onPress={() => togglePremiumModal()} style={styles.closeButton}>
+                        <TouchableOpacity onPress={() => handlePremiumUpdate} style={styles.closeButton}>
                             <Text style={styles.buttonText}>Subscribe to Premium</Text>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => togglePremiumModal()} style={styles.closeButton}>

@@ -49,8 +49,6 @@ const ModifyItem = ({route}) => {
     }
 
     const handleContainerChange = (item, cont, sty) => {
-        console.log(cont)
-        console.log(sty)
         const updatedItem = {
             ...item,
             container: cont,
@@ -77,8 +75,12 @@ const ModifyItem = ({route}) => {
       
         return styles[number] || { backgroundColor: 'white' };
       };
-    function handleEdit(cont){
-        setContainer(cont)
+    const handleNoteUpdate = (item) => {
+      const updatedItem = {
+        ...item,
+        notes: notes
+      }
+      dispatch(updateItem(updatedItem))
     }
 
     const handleContainer = (cont, sty) => {
@@ -164,7 +166,7 @@ const ModifyItem = ({route}) => {
                   <View>
                     <TextInput
                         style={styles.inputCustom}
-                        placeholder="add(+), subtract(-)"
+                        placeholder="Custom Change"
                         placeholderTextColor="darkgrey"
                         value={customChange}
                         onChangeText={setCustomChange}
@@ -175,7 +177,8 @@ const ModifyItem = ({route}) => {
                   </View>
                 </View>
             </View>
-
+            <View style={styles.sectionView}>
+            <Text style={{paddingBottom: 10}}>Notes</Text>
             <TextInput
                   style={styles.input}
                   placeholder={item.notes}
@@ -183,6 +186,10 @@ const ModifyItem = ({route}) => {
                   value={notes}
                   onChangeText={setNotes}
                 />
+            <TouchableOpacity style={styles.editButton} onPress={() => handleNoteUpdate(item)}>
+                  <Text style={styles.buttonText}>Update Notes</Text>
+            </TouchableOpacity>
+            </View>
             <View style={styles.addRemove}>
                 <TouchableOpacity style={styles.editButton} onPress={readNdef}>
                     <Text style={styles.buttonText}> Edit Container</Text>

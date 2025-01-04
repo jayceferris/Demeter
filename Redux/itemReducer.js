@@ -23,7 +23,7 @@ const itemSlice = createSlice({
         },
         togglePremium: (state, action) => {
             state.premium = (!state.premium)
-        }
+        },
     }
 });
 
