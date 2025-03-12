@@ -2,6 +2,7 @@
 ## Updates
 11/24 - Applied for Social Venture Challenge at SDSU  
 12/24 - Selected as a semfinalist  
+1/8 - Invited to join Lavin Entrepeneurship Center
 ## Description
 A mobile app designed to help users manage the contents of their refrigerator and food storage areas effectively. Demeter simplifies inventory tracking and ensures no food goes to waste by notifying users of expiration dates and offering additional features to optimize food management.
 ## Features
